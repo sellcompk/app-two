@@ -1,29 +1,12 @@
-# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
-# Copy project file and restore dependencies
-COPY ["src/app-two/app-two.csproj", "src/app-two/"]
-RUN dotnet restore "src/app-two/app-two.csproj"
-
-# Copy source code and build
-COPY . .
-WORKDIR "/src/app-two"
-RUN dotnet build "app-two.csproj" -c Release --no-restore -o /app/build
-
-# Publish stage
-FROM build AS publish
-WORKDIR "/src/app-two"
-RUN dotnet publish "app-two.csproj" -c Release --no-restore -o /app/publish /p:UseAppHost=false
-
-# Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
 
-# Set environment variables
 ENV ASPNETCORE_URLS=http://+:80
 
-EXPOSE 80
+COPY \
+    . /app
 
-ENTRYPOINT ["dotnet", "app-two.dll"]
+ENTRYPOINT ["dotnet", "src/app-two/app-two.dll"]
+
+EXPOSE 80
