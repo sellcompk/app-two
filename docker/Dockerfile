@@ -9,12 +9,12 @@ RUN dotnet restore "src/app-two/app-two.csproj"
 # Copy source code and build
 COPY . .
 WORKDIR "/src/app-two"
-RUN dotnet build "app-two.csproj" -c Release -o /app/build
+RUN dotnet build "app-two.csproj" -c Release --no-restore -o /app/build
 
 # Publish stage
 FROM build AS publish
 WORKDIR "/src/app-two"
-RUN dotnet publish "app-two.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "app-two.csproj" -c Release --no-restore -o /app/publish /p:UseAppHost=false
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final

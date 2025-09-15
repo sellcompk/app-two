@@ -88,8 +88,8 @@ jobs:
             # Run new container
             docker run --cpus="0.5" --memory="1g" -d \
               --name $CONTAINER_NAME \
-              -e NODE_ENV='production' \
-              -e PORT=80 \
+              -e ASPNETCORE_ENVIRONMENT='Production' \
+              -e ASPNETCORE_URLS='http://+:80' \
               -e JWT_KEY='${{ secrets.JWT_KEY }}' \
               -e JWT_ISSUER='${{ vars.JWT_ISSUER || 'oracle' }}' \
               -e JWT_AUDIENCE='${{ vars.JWT_AUDIENCE || 'api-two' }}' \
