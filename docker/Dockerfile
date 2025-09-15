@@ -2,18 +2,20 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy project file and restore dependencies
+# Copy solution file and restore dependencies
+COPY ["src/app-two.sln", "src/"]
 COPY ["src/app-two/app-two.csproj", "src/app-two/"]
-RUN dotnet restore "src/app-two/app-two.csproj"
+RUN dotnet restore "src/app-two.sln"
 
 # Copy source code and build
 COPY . .
-WORKDIR "/src/app-two"
-RUN dotnet build "app-two.csproj" -c Release -o /app/build
+WORKDIR "/src"
+RUN dotnet build "app-two.sln" -c Release -o /app/build
 
 # Publish stage
 FROM build AS publish
-RUN dotnet publish "app-two.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR "/src"
+RUN dotnet publish "app-two/app-two.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
