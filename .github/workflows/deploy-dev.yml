@@ -1,0 +1,23 @@
+name: Dev Deployment
+
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  Deploy:
+    name: Deploy to Development
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      GHCR_PAT: ${{ secrets.GHCR_PAT }}
+      JWT_KEY: ${{ secrets.JWT_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+    with:
+      container_name: app-two-dev
+      docker_network: oracle-dev
+      port: ${{ vars.DEV_PORT }}
